@@ -1,0 +1,60 @@
+<!-- 用户详情 -->
+<div id="userDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md2 layui-col-md-offset5 layui-col-xs4 layui-col-xs-offset4">
+			<img class="user-detail-img" th:src="${user.photo}" />
+		</div>
+		<div class="layui-col-md12 layui-col-xs12 user-detail-name text-align-center">
+			[[${user.username}]]
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">用户ID:</label>
+			<label class="layui-form-label label-text-left">[[${user.userId}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">性别:</label>
+			<label class="layui-form-label label-text-left">[[${@dict.getValueLabel('sys_gender',user.gender)}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">出生日期:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${user.birthday==null?'无':#dates.format(user.birthday,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">QQ:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${user.qq==null?'无':user.qq}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">Email:</label>
+			<label class="layui-form-label label-text-left">[[${user.email==null?'无':user.email}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${user.createBy==null?'无':user.createBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${user.createTime==null?'无':#dates.format(user.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${user.updateBy==null?'无':user.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${user.updateTime==null?'无':#dates.format(user.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

@@ -1,0 +1,195 @@
+<!-- 用户注册 -->
+<div id="userAdd" class="dialog-main">
+	<form class="layui-form" action="">
+		<!-- 表单数据 -->
+		<fieldset class="layui-elem-field">
+			<legend>用户信息</legend>
+			<div class="layui-field-box">
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-block">
+						<input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-block">
+						<input type="password" name="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">角色</label>
+					<div class="layui-input-block">
+						<div id="roles"></div>
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">性别</label>
+					<div class="layui-input-block">
+						<select name="gender">
+					        <option th:each="item : ${@dict.getValues('sys_gender')}" th:value="${item.valueCode}">[[${item.valueLabel}]]</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">生日</label>
+					<div class="layui-input-block">
+						<input id="birthday" type="text" name="birthday" required  lay-verify="required" placeholder="请选择生日" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">头像</label>
+					<div class="layui-input-block">
+						<button type="button" class="layui-btn layui-btn-danger" id="choosePhoto"><i class="layui-icon"></i>选择头像</button>
+						<div id="filePath" class="layui-inline layui-word-aux">
+							请选择上传图片
+						</div>
+						<input type="text" name="photo" class="display-none">
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">QQ</label>
+					<div class="layui-input-block">
+						<input type="text" name="qq" placeholder="请输入QQ" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">Email</label>
+					<div class="layui-input-block">
+						<input type="text" name="email" placeholder="请输入Email" autocomplete="off" class="layui-input">
+					</div>
+				</div>			
+			</div>
+		</fieldset>
+		<!-- 表单提交按钮 -->
+		<div class="layui-form-item layui-row text-align-right">
+			<button id="userAddSubmit" class="layui-btn layui-btn-radius" lay-submit lay-filter="userAddSubmit">添加</button>
+			<button type="reset" class="layui-btn layui-btn-radius layui-btn-primary">重置</button>
+			<button id="close" type="button" class="layui-btn layui-btn-radius layui-btn-danger">关闭</button>
+		</div>
+	</form>
+</div>
+<script th:inline="javascript">
+	var ctx = [[@{/}]];
+
+	//Layui加载第三方组件
+	layui.config({
+		base : ctx + 'js/layuiadmin/' //静态资源所在路径
+	}).extend({
+		xmSelect : 'lib/xm-select' //主入口模块
+	});
+	layui.use(['form', 'jquery', 'laydate', 'layer', 'xmSelect', 'upload'], function() {
+		var $ = layui.jquery,
+		form = layui.form,
+		laydate = layui.laydate,
+		layer = layui.layer,
+		xmSelect = layui.xmSelect,
+		upload = layui.upload,
+		
+		$dom = $("#userAdd"),
+		$form = $dom.find("form"),
+		
+		index = layer.index,
+		roles,
+		uploadIns,
+		isChoosed = false;
+		
+		//表单渲染
+		form.render();
+		
+		//日期控件渲染
+		laydate.render({
+			elem: "#birthday",
+			type: "datetime"
+		});
+		
+		//下拉框渲染
+		$.get({
+			url: ctx + "role/getAllRoles",
+			success: function(res){
+				//数据转换
+				var selectData = [];
+				if(res.code==200){
+					res.data.forEach(function(role){
+						selectData.push({
+							name: role.roleName,
+							value: role.roleId
+						})
+					})
+				}
+				//渲染
+				roles = xmSelect.render({
+					el: '#roles',
+					language: 'zn',
+					data: selectData
+				});
+			}
+		})
+		
+		//对话框关闭
+		$dom.find("#close").click(function(){
+			layer.close(index);
+		});
+		
+
+		//文件控件渲染
+		uploadIns = upload.render({
+			elem: '#choosePhoto'
+			,url: ctx + 'sys/upload' //改成您自己的上传接口
+			,accept: 'images'
+			,auto: false
+			//,binfAction: "#aaa"
+			,choose: function(obj){
+				isChoosed = true;
+				obj.preview(function(index, file, result){
+					$dom.find("#filePath").text(file.name);
+				});
+			}
+    		,done: function(res){
+      			if(res.code==200){
+      				var photo = res.data;
+      				$dom.find("input[name='photo']").val(photo);
+      				//表单再次提交
+      				$dom.find("#userAddSubmit").click();
+      			}else{
+      				util.error("头像上传失败");
+      			}
+    		}
+    		,error: function(){
+    			util.error("头像上传失败");
+    		}
+  		});
+		
+		
+		//注册表单提交
+		form.on('submit(userAddSubmit)',function(data){
+			if(isChoosed){
+				//获取表单字段
+				var user = data.field;
+				user["roleIdsStr"] = roles.getValue("valueStr");
+				if(user.photo==null||user.photo==""){//但头像未上传，上传头像
+					uploadIns.upload();
+				}else{
+					//请求保存数据
+					$.post({
+						url: ctx + "user/add",
+						data: user,
+						success: function(res){
+							if(res.code==200){
+								util.success("添加成功");
+								layer.close(index);
+								//表格刷新
+								$("#user").find("#find").click();
+							}else{
+								util.error(res.msg);
+							}
+						}
+					});
+				}
+			}else{
+				util.error("请选择头像");
+			}
+			return false;
+		});
+	});
+</script>

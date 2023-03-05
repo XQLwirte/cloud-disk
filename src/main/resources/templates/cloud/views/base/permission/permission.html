@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" 
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" th:href="@{/js/layuiadmin/layui/css/layui.css}" media="all">
+<link rel="stylesheet" th:href="@{/css/common.css}" media="all">
+<!-- dropdown组件 -->
+<link rel="stylesheet" th:href="@{/js/layuiadmin/style/dropdown.css}" media="all">
+</head>
+<body>
+	<div class="main" id="permission">
+		<!-- 搜索工具栏 -->
+		<div class="layui-row layui-col-space10">
+			<!-- 查询表单 -->
+			<form class="layui-form layui-col-md9  layui-col-xs12 layui-row">
+				<div class="layui-form-item layui-row">
+					<div class="layui-col-md4 layui-col-xs12">
+						<label class="layui-form-label">权限名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="permissionName" placeholder="请输入内容" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					<div class="layui-col-md4 layui-col-xs12">
+						<label class="layui-form-label">权限码</label>
+						<div class="layui-input-block">
+							<input type="text" name="permissionCode" placeholder="请输入内容" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					<div class="layui-col-md4 layui-col-xs12">
+						<label class="layui-form-label">描述</label>
+						<div class="layui-input-block">
+							<input type="text" name="permissionDescribe" placeholder="请输入内容" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					<div class="layui-col-md4 layui-col-xs12">
+						<label class="layui-form-label">创建人</label>
+						<div class="layui-input-block">
+							<input type="text" name="createBy" placeholder="请输入内容" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+					<div class="layui-col-md4 layui-col-xs12">
+						<label class="layui-form-label">创建时间</label>
+						<div class="layui-input-block">
+							<input id="createTime" type="text" name="createTime" placeholder="请选择时间" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+			</form>
+			<!-- 功能按钮 -->
+			<div class="layui-col-md3  layui-col-xs12 layui-fluid">
+				<button id="find" type="button"
+					class="layui-btn layui-btn-radius layui-btn-primary">
+					<i class="layui-icon layui-icon-search"></i>
+				</button>
+				<button id="refresh" type="button"
+					class="layui-btn layui-btn-radius layui-btn-primary">
+					<i class="layui-icon layui-icon-refresh"></i>
+				</button>
+				<div class="tool">
+					<button id="more" type="button"
+						class="layui-btn layui-btn-radius layui-btn-primary">
+						<i class="layui-icon layui-icon-more"></i>
+					</button>
+					<!-- 下拉按钮 -->
+					<div class="layui-dropdown-menu">
+						<div class="layui-row">
+							<button id="deleteBatch" type="button" shiro:hasPermission="permission:delete"
+								class="layui-col-md12 layui-col-xs12 layui-btn layui-btn-primary">批量删除</button>
+						</div>
+						<div class="layui-row">
+							<button id="addPermission" type="button" shiro:hasPermission="permission:add"
+								class="layui-col-md12 layui-col-xs12 layui-btn layui-btn-primary">添加权限</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 表格数据 -->
+		<div class="layui-row">
+			<table id="permissionTable" lay-filter="permissionTable"></table>
+		</div>
+	</div>	
+	<!-- 工具按钮 -->
+	<script type="text/html" id="permissionBar">
+  <a shiro:hasPermission="permission:view" class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+  <a shiro:hasPermission="permission:update" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
+  <a shiro:hasPermission="permission:delete" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+	<script th:src="@{/js/layuiadmin/layui/layui.js}"></script>
+	<script th:src="@{/js/util.js}"></script>
+	<script th:inline="javascript">
+		//数据字典数据
+	</script>
+	<script>
+	var ctx = "[[@{/}]]";
+	
+		//拓展Layui组件
+		layui.config({
+			base: ctx + 'js/layuiadmin/modules/'
+		}).extend({
+			dropdown: 'dropdown'
+		});
+		
+		layui.use([ 'jquery','table','laydate','dropdown','layer'], function() {
+			var $ = layui.jquery, 
+			table = layui.table,
+			laydate = layui.laydate,
+			dropdown = layui.dropdown,
+			layer = layui.layer,
+
+			$dom = $("#permission"), 
+			$form = $dom.find("form"),
+			sortInfo = {field: 'createTime',type:'asc'},
+			tableIns;
+
+			//渲染时间控件
+			laydate.render({
+				elem: "#createTime",
+				type: "datetime"
+			});
+			
+			//渲染表格
+			function initTable() {
+				tableIns = table.render({
+					elem : '#permissionTable',
+					url : ctx + 'permission/getPermissionsPage', //数据接口
+					where: $.extend({},getQueryParam(),sortInfo),
+					page : true, //开启分页
+					parseData: function(res){
+						if(res.code==200)
+							res.code=0;
+						return res;
+					},
+					cols : [ [
+					{checkbox: true},
+					{field : 'permissionName',title : '权限名称',align:'center',minWidth:120},
+					{field : 'permissionCode',title : '权限码',align:'center',minWidth:100},
+					{field : 'createBy',title : '创建人',align:'center',minWidth:160},
+					{field : 'createTime',title : '创建时间',align:'center',sort:true,minWidth:160},
+					{field : 'permissionDescribe',title : '描述',align:'center',minWidth:100},
+					{fixed: 'right',title: '操作', width:200, align:'center', toolbar: '#permissionBar'}
+					]],
+					done: function(){
+						$dom.find("table").css("width","100%");
+					}
+				});
+			}
+			initTable();
+			
+			
+			//菜单按钮
+			$dom.find("#find").click(function(){
+				initTable();
+			});
+			$dom.find("#refresh").click(function(){
+				$form[0].reset();
+				initTable();
+			});
+			//下拉菜单渲染
+			dropdown.render({
+				dropdown: '.tool',
+				toggle: '#more'
+			});
+
+			//添加权限
+			$dom.find("#addPermission").click(function(){
+				util.open({
+				   title: "添加权限",
+				   offset: "t",
+				   area: ["80%","100%"],
+				   url: ctx + "base/permission/permissionAdd"
+				});
+			});
+			//批量删除
+			$dom.find("#deleteBatch").click(function(){
+				var checkStatus = table.checkStatus('permissionTable');
+				if(checkStatus.data.length<=0){
+					util.error("请选中删除行"); 
+				}else{
+					layer.confirm('确定删除选中权限吗？<br>在一段时间后选中权限信息将会永久性删除', {icon: 3, title:'提示'}, function(index){
+						var permissions = checkStatus.data;
+						var permissionIds = [];
+						permissions.forEach(function(permission){
+							permissionIds.push(permission.permissionId);
+						});
+						//删除请求
+						$.get({
+							url: ctx + 'permission/permissionDeleteBatch/'+permissionIds.join(','),
+							success: function(res){
+								if(res.code==200){
+									util.success("删除成功");
+									initTable();
+								}else{
+									util.error("删除失败"); 
+								}
+							}
+						});
+					});
+				}
+			});
+			
+			
+			//获取表单查询参数
+			function getQueryParam(){
+				return {
+					permissionName: $form.find("input[name='permissionName']").val().trim(),
+					permissionCode: $form.find("input[name='permissionCode']").val().trim(),
+					permissionDescribe: $form.find("input[name='permissionDescribe']").val().trim(),
+					createBy: $form.find("input[name='createBy']").val().trim(),
+					createTime: $form.find("input[name='createTime']").val()
+				};
+			}
+			
+			//表格单元按钮监听
+			table.on('tool(permissionTable)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+				  var data = obj.data; //获得当前行数据
+				  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+				  var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+				 
+				  if(layEvent === 'detail'){ //查看
+					  util.open({
+						  title: "权限信息",
+						  offset: "auto",
+						  area: ["80%"],
+						  url: ctx + "base/permission/permissionDetail/"+data.permissionId
+					  });
+				  } else if(layEvent === 'edit'){ //编辑
+					  util.open({
+						  title: "权限编辑",
+						  offset: "t",
+						  area: ["80%","100%"],
+						  url: ctx + "base/permission/permissionEdit/"+data.permissionId
+					  });
+				  }  else if(layEvent === 'del'){ //删除
+					  layer.confirm('确定删除此项权限吗？<br>在一段时间后权限信息将会永久性删除', {icon: 3, title:'提示'}, function(index){
+						  $.get({
+							url: ctx + "permission/permissionDelete/"+data.permissionId,
+							success: function(res){
+								if(res.code==200){
+									util.success("删除成功"); 
+									layer.close(index);
+									initTable();
+								}else{
+									util.error("删除失败");  
+								}
+							}
+						 });
+					  });
+				  } 
+			});
+			
+			//表格排序
+			table.on('sort(permissionTable)', function(obj){ //注：sort 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+				sortInfo = obj;
+				tableIns.reload({
+					where :sortInfo
+				});
+			});
+		});
+	</script>
+</body>
+</html>

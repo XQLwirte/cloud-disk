@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcx.cloud.garbage.mapper.GarbageMapper">
+
+	<resultMap id="garbageMap" type="com.zcx.cloud.garbage.entity.Garbage">
+        <id column="garbageId" property="garbageId"></id>
+        <result column="username" property="username"></result>
+        <result column="resourceId" property="resourceId"></result>
+        <result column="resourceType" property="resourceType"></result>
+        <result column="active" property="active"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="garbageValid" property="valid"></result>
+    </resultMap>
+
+    <sql id="garbageMapperSql">
+        select distinct
+          garbage.garbage_id garbageId,
+          user.username username,
+          garbage.resource_id resourceId,
+          garbage.resource_type resourceType,
+          garbage.active active,
+          garbage.create_by create_by,
+          garbage.create_time create_time,
+          garbage.valid garbageValid
+        from t_garbage garbage
+         left join t_garbage_user gu on garbage.garbage_id = gu.garbage_id
+         left join t_user user on gu.user_id = user.user_id
+    </sql>
+
+    <select id="selectGarbagePage" resultMap="garbageMap">
+        <include refid="garbageMapperSql"></include>
+        <where>
+            <if test="garbage.username!=null and garbage.username!=''">
+                and username like concat('%',#{garbage.username},'%')
+            </if>
+            <if test="garbage.createBy!=null and garbage.createBy!=''">
+                and garbage.create_by like concat('%',#{garbage.createBy},'%')
+            </if>
+            <if test="garbage.createTime!=null">
+                and garbage.create_time > #{garbage.createTime}
+            </if>
+            and garbage.valid = '1'
+        </where>
+    </select>
+
+</mapper>

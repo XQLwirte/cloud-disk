@@ -1,0 +1,91 @@
+<!-- 存储信息编辑 -->
+<div id="storageEdit" class="dialog-main">
+	<form class="layui-form" action="">
+		<!-- 表单数据 -->
+		<fieldset class="layui-elem-field">
+			<legend>[[${storage.username}]]的存储信息</legend>
+			<div class="layui-field-box">
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">所属用户</label>
+					<div class="layui-input-block">
+						<input type="text" th:value="${storage.username}" required  lay-verify="required" autocomplete="off" class="layui-input" readonly>
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">存储ID</label>
+					<div class="layui-input-block">
+						<input type="text" name="storageId" th:value="${storage.storageId}" required  lay-verify="required" autocomplete="off" class="layui-input" readonly>
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">已用容量</label>
+					<div class="layui-input-inline">
+						<input type="text" th:value="${storage.capacityUse}" required  lay-verify="required" placeholder="请输入已用容量" autocomplete="off" class="layui-input" readonly>
+					</div>
+					<div class="layui-form-mid layui-word-aux">[[${storage.capacityUse/1024/1024}]]M</div>
+				</div>	
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">总容量</label>
+					<div class="layui-input-inline">
+						<input type="text" name="capacityTotal" th:value="${storage.capacityTotal}" required  lay-verify="required" placeholder="请输入总容量" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-mid layui-word-aux">[[${storage.capacityTotal/1024/1024}]]M</div>
+				</div>
+			</div>
+		</fieldset>
+		<!-- 表单提交按钮 -->
+		<div class="layui-form-item layui-row text-align-right">
+			<button class="layui-btn layui-btn-radius" lay-submit lay-filter="storageEditSubmit">修改</button>
+			<button id="close" type="button" class="layui-btn layui-btn-radius layui-btn-danger">关闭</button>
+		</div>
+	</form>
+</div>
+<script th:inline="javascript">
+	var storageDB = [[${storage}]];
+</script>
+<script th:inline="javascript">
+	var ctx = [[@{/}]];
+
+	layui.use(['form', 'jquery', 'layer'], function() {
+		var $ = layui.jquery,
+		form = layui.form,
+		layer = layui.layer,
+		
+		$dom = $("#storageEdit"),
+		$form = $dom.find("form"),
+		
+		index = layer.index;
+		
+		//表单渲染
+		form.render();
+		
+		//对话框关闭
+		$dom.find("#close").click(function(){
+			layer.close(index);
+		});
+				
+		//注册表单提交
+		form.on('submit(storageEditSubmit)',function(data){
+			var storage = data.field;
+			if(storage.capacityTotal>=storageDB.capacityUse){
+				$.post({
+					url: ctx + "storage/storageUpdate",
+					data: storage,
+					success: function(res){
+						if(res.code==200){
+							util.success("修改成功");
+							layer.close(index);
+							//表格刷新
+							$("#storage").find("#find").click();
+						}else{
+							util.error(res.msg);
+						}
+					}
+				});
+			}else{
+				util.error("总容量不能小于已用容量");
+			}
+			return false;
+		});
+	});
+</script>

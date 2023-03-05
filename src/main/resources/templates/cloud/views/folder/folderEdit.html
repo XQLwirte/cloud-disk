@@ -1,0 +1,97 @@
+<!-- 文件编辑 -->
+<div id="folderEdit" class="dialog-main">
+	<!-- 菜单树 -->
+	<div class="layui-row">
+		<fieldset class="layui-elem-field">
+			<legend>目录文件树</legend>
+			<div class="layui-field-box">
+				<div id="folderTree" class="demo-tree-more"></div>
+			</div>
+		</fieldset>
+	</div>
+</div>
+<script th:inline="javascript">
+	var folder = [[${folder}]];
+</script>
+<script th:inline="javascript">
+	var ctx = [[@{/}]];
+	
+	layui.use(['form', 'jquery', 'layer', 'tree'], function() {
+		var $ = layui.jquery,
+		form = layui.form,
+		layer = layui.layer,
+		tree = layui.tree,
+		
+		$dom = $("#folderEdit"),
+		
+		index = layer.index,
+		role = [[${role}]],
+		menuIds = [[${menuIds}]];
+		
+		//表单渲染
+		form.render();
+		
+		
+		initFolderTree();
+		//渲染目录树
+		function initFolderTree(){
+			//数据获取
+			$.get({
+				url: ctx + 'folder/getFolderTree/'+folder.folderId,
+				success: function(res){
+					if(res.code==200){
+						//数据转换
+						var folderTree = res.data;
+						var treeData = [getFolderTreeData(folderTree)];
+						//渲染树
+						tree.render({
+							id: 'folderTree'
+					    	,elem: '#folderTree'
+						    ,data: treeData
+							,click: function(obj){
+								var data = obj.data;
+								//文件下载
+								if(!data.isFolder){
+									layer.confirm('确定下载此文件吗', {icon: 3, title:'提示'}, function(index){
+										window.open(data.url);
+										layer.close(index);
+									});
+								}
+							}
+						});
+					}else{
+						util.error("获取目录树失败");
+					}
+				}
+			})
+		}
+		function getFolderTreeData(folder){
+			var result = {
+				id: folder.folderId, 
+				title: folder.folderName,
+				children: [],
+				isFolder: true
+			};
+			//挂载目录
+			if(folder.folders!=null&&folder.folders.length>0){
+				folder.folders.forEach(function(f){
+					result.children.push(getFolderTreeData(f));
+				})
+			}
+			//挂载文件
+			if(folder.files!=null&&folder.files.length>0){
+				folder.files.forEach(function(file){
+					result.children.push({
+						id: file.fileId, 
+						title: file.fileName,
+						isFolder: false,
+						url: file.fileUrl
+					})
+				});
+			}
+			
+			return result;
+		}
+		
+	});
+</script>

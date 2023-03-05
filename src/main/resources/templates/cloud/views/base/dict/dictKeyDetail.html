@@ -1,0 +1,42 @@
+<!-- 字典键详情 -->
+<div id="dictKeyDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">键ID:</label>
+			<label class="layui-form-label label-text-left">[[${dictKey.keyId}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">键码:</label>
+			<label class="layui-form-label label-text-left">[[${dictKey.keyCode==null?'无':dictKey.keyCode}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">键标签:</label>
+			<label class="layui-form-label label-text-left">[[${dictKey.keyLabel==null?'无':dictKey.keyLabel}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${dictKey.createBy==null?'无':dictKey.createBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${dictKey.createTime==null?'无':#dates.format(dictKey.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${dictKey.updateBy==null?'无':dictKey.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${dictKey.updateTime==null?'无':#dates.format(dictKey.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

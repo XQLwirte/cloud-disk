@@ -1,0 +1,82 @@
+<!-- 定时任务详情 -->
+<div id="jobDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">任务ID:</label>
+			<label class="layui-form-label label-text-left">[[${job.jobId}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">任务名称:</label>
+			<label class="layui-form-label label-text-left">[[${job.jobName==null?'无':job.jobName}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">任务组:</label>
+			<label class="layui-form-label label-text-left">[[${job.jobGroup==null?'无':job.jobGroup}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">Bean:</label>
+			<label class="layui-form-label label-text-left">[[${job.beanName==null?'无':job.beanName}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">方法名称:</label>
+			<label class="layui-form-label label-text-left">[[${job.beanMethod==null?'无':job.beanMethod}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">参数:</label>
+			<label class="layui-form-label label-text-left">[[${job.beanParam==null?'无':job.beanParam}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">Cron:</label>
+			<label class="layui-form-label label-text-left">[[${job.cron==null?'无':job.cron}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">开始时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${job.startTime==null?'无':#dates.format(job.startTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">结束时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${job.endTime==null?'无':#dates.format(job.endTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${job.createBy==null?'无':job.createBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${job.createTime==null?'无':#dates.format(job.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${job.updateBy==null?'无':job.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${job.updateTime==null?'无':#dates.format(job.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md12 layui-col-xs12">
+			<label class="layui-form-label">备注:</label>
+			<label class="layui-form-label label-width-auto label-text-left">[[${job.remark==null?'无':job.remark}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md12 layui-col-xs12">
+			<label class="layui-form-label">任务状态:</label>
+			<label class="layui-form-label label-width-auto label-text-left">[[${@dict.getValueLabel('job_status',job.status)}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

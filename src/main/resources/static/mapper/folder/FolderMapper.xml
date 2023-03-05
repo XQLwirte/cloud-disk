@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcx.cloud.folder.mapper.FolderMapper">
+	
+	<resultMap id="folderMap" type="com.zcx.cloud.folder.entity.Folder">
+        <id column="folderId" property="folderId"></id>
+        <result column="folderName" property="folderName"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="folderValid" property="valid"></result>
+        <result column="username" property="username"></result>
+    </resultMap>
+
+    <sql id="folderMapperSql">
+        select distinct
+          folder.folder_id folderId,
+          folder.folder_name folderName,
+          folder.create_by create_by,
+          folder.create_time create_time,
+          folder.valid folderValid,
+          user.username username
+        from t_folder folder
+         left join t_folder_user fu on folder.folder_id = fu.folder_id
+         left join t_user user on fu.user_id = user.user_id
+    </sql>
+
+    <select id="selectFolderPage" resultMap="folderMap">
+        <include refid="folderMapperSql"></include>
+        <where>
+            <if test="folder.username!=null and folder.username!=''">
+                and username like concat('%',#{folder.username},'%')
+            </if>
+            <if test="folder.createBy!=null and folder.createBy!=''">
+                and folder.create_by like concat('%',#{folder.createBy},'%')
+            </if>
+            <if test="folder.createTime!=null">
+                and folder.create_time > #{folder.createTime}
+            </if>
+            and folder.valid = '1'
+            and folder.parent_id = '0'
+        </where>
+    </select>
+	
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcx.cloud.share.mapper.ShareMapper">
+
+	<resultMap id="shareMap" type="com.zcx.cloud.share.entity.Share">
+        <id column="shareId" property="shareId"></id>
+        <result column="username" property="username"></result>
+        <result column="fileId" property="fileId"/>
+        <result column="fileName" property="fileName"></result>
+        <result column="activeDuration" property="activeDuration"></result>
+        <result column="activeFlag" property="activeFlag"></result>
+        <result column="download" property="download"></result>
+        <result column="shareCode" property="shareCode"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="shareValid" property="valid"></result>
+    </resultMap>
+
+    <sql id="shareMapperSql">
+        select distinct
+         share.share_id shareId,
+         share.active_duration activeDuration,
+         share.active_flag activeFlag,
+         share.file_id fileId,
+         share.download download,
+         share.share_code shareCode,
+         share.create_by create_by,
+         share.create_time create_time,
+         share.valid shareValid,
+         user.username username,
+         file.file_name fileName
+        from t_share share
+         left join t_share_user su on share.share_id = su.share_id
+         left join t_user user on su.user_id = user.user_id
+         left join t_file file on share.file_id = file.file_id
+    </sql>
+
+    <select id="selectSharePage" resultMap="shareMap">
+        <include refid="shareMapperSql"></include>
+        <where>
+            <if test="share.username!=null and share.username!=''">
+                and user.username like concat('%',#{share.username},'%')
+            </if>
+            <if test="share.fileName!=null and share.fileName!=''">
+                and file.file_name like concat('%',#{share.fileName},'%')
+            </if>
+            <if test="share.shareCode!=null and share.shareCode!=''">
+                and share.share_code like concat('%',#{share.shareCode},'%')
+            </if>
+            <if test="share.createBy!=null and share.createBy!=''">
+                and share.create_by like concat('%',#{share.createBy},'%')
+            </if>
+            <if test="share.createTime!=null">
+                and share.create_time > #{share.createTime}
+            </if>
+            and share.valid = '1'
+        </where>
+    </select>
+
+
+</mapper>

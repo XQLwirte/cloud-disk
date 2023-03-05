@@ -1,0 +1,58 @@
+<!-- 存储详情 -->
+<div id="storageDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">共享ID:</label>
+			<label class="layui-form-label label-text-left">[[${share.shareId}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">所属用户:</label>
+			<label class="layui-form-label label-text-left">[[${share.username==null?'无':share.username}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">文件名:</label>
+			<label class="layui-form-label label-text-left">[[${share.fileName==null?'无':share.fileName}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">有效状态:</label>
+			<label class="layui-form-label label-text-left">[[${@dict.getValueLabel('share_active_flag',share.activeFlag)}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">共享码:</label>
+			<label class="layui-form-label label-text-left">[[${share.shareCode==null?'无':share.shareCode}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">下载数:</label>
+			<label class="layui-form-label label-text-left">[[${share.download==null?'无':share.download}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${share.createBy==null?'无':share.createBy}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${share.createTime==null?'无':#dates.format(share.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${share.updateBy==null?'无':share.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${share.updateTime==null?'无':#dates.format(share.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

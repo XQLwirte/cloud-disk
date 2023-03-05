@@ -1,0 +1,120 @@
+<!-- 角色权限信息编辑 -->
+<div id="roleEditPermission" class="dialog-main">
+	<!-- 菜单树 -->
+	<div class="layui-row">
+		<fieldset class="layui-elem-field">
+			<legend>权限列表</legend>
+			<div class="layui-field-box">
+				<div id="permissionList" class="demo-tree-more"></div>
+			</div>
+		</fieldset>
+	</div>
+	<!-- 功能按钮 -->
+	<div class="layui-row layui-row text-align-right">
+		<button id="submit" type="button" class="layui-btn layui-btn-radius">确定</button>
+		<button id="close" type="button" class="layui-btn layui-btn-radius layui-btn-danger">关闭</button>
+	</div>
+</div>
+<script th:inline="javascript">
+	var ctx = [[@{/}]];
+
+	layui.use(['form', 'jquery', 'layer', 'tree'], function() {
+		var $ = layui.jquery,
+		form = layui.form,
+		layer = layui.layer,
+		tree = layui.tree,
+		
+		$dom = $("#roleEditPermission"),
+		$form = $dom.find("form"),
+		
+		index = layer.index,
+		role = [[${role}]],
+		permissionIds = [[${permissionIds}]];
+		
+		//表单渲染
+		form.render();
+		
+		initPermissionList();
+		//渲染菜单树
+		function initPermissionList(){
+			//数据获取
+			$.get({
+				url: ctx + 'permission/getAllPermGroupByAndSort',
+				success: function(res){
+					if(res.code==200){
+						//数据转换
+						var permissions = res.data;
+						var treeData = getPermissionList(permissions);
+						//渲染树
+						tree.render({
+							id: 'permissionList'
+					    	,elem: '#permissionList'
+						    ,data: treeData
+						    ,showCheckbox: true  //是否显示复选框
+						});
+					}else{
+						util.error("所有菜单获取失败");
+					}
+				}
+			})
+		}
+		function getPermissionList(permissions){
+			var result = [];
+			var children = [];
+			permissions.forEach(function(permission){
+				var data = {
+					id: permission.permissionId, 
+					title: permission.permissionCode+"---"+permission.permissionName, 
+					checked: util.inArray(permission.permissionId,permissionIds),
+					spread: true //默认展开
+				}
+				children.push(data);
+			});
+			result.push({
+				id: -1,
+				title: "全部",
+				children: children,
+				spread: true //默认展开
+			});
+			return result;
+		}
+		
+		
+	    //对话框关闭
+		$dom.find("#close").click(function(){
+			layer.close(index);
+		});
+	    //关联菜单修改
+		$dom.find("#submit").click(function(){
+			var checkedData = tree.getChecked('permissionList');
+			var checkedIds = getCheckedIds(checkedData);
+			$.post({
+				url: ctx + "role/roleUpdatePermission",
+				data: {
+					roleId: role.roleId,
+					permissionIdsStr: checkedIds.join(",") 
+				},
+				success: function(res){
+					if(res.code==200){
+						util.success("修改成功");
+						layer.close(index);
+						//表格刷新
+						$("#role").find("#find").click();
+					}else{
+						util.error(res.msg);
+					}
+				}
+			});
+		});
+		function getCheckedIds(datas){
+			var ids = [];
+			datas.forEach(function(data){
+				if(data.id!=null)
+					ids.push(data.id);
+				if(data.children!=null&&data.children.length>0)
+					ids = ids.concat(getCheckedIds(data.children));
+			});
+			return ids;
+		}
+	});
+</script>

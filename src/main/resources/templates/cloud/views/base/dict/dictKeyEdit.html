@@ -1,0 +1,76 @@
+<!-- 字典键编辑 -->
+<div id="dictKeyEdit" class="dialog-main">
+	<form class="layui-form" action="">
+		<!-- 表单数据 -->
+		<fieldset class="layui-elem-field">
+			<legend>字典键信息</legend>
+			<div class="layui-field-box">
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">键ID</label>
+					<div class="layui-input-block">
+						<input type="text" name="keyId" th:value="${dictKey.keyId}" required  lay-verify="required" autocomplete="off" class="layui-input" readonly>
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">键码</label>
+					<div class="layui-input-block">
+						<input type="text" name="keyCode" th:value="${dictKey.keyCode}" required  lay-verify="required" placeholder="请输入键码" autocomplete="off" class="layui-input" readonly>
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">键标签</label>
+					<div class="layui-input-block">
+						<input type="text" name="keyLabel" th:value="${dictKey.keyLabel}" required  lay-verify="required" placeholder="请输入键标签" autocomplete="off" class="layui-input">
+					</div>
+				</div>		
+			</div>
+		</fieldset>
+		<!-- 表单提交按钮 -->
+		<div class="layui-form-item layui-row text-align-right">
+			<button class="layui-btn layui-btn-radius" lay-submit lay-filter="dictKeyEditSubmit">修改</button>
+			<button id="close" type="button" class="layui-btn layui-btn-radius layui-btn-danger">关闭</button>
+		</div>
+	</form>
+</div>
+<script th:inline="javascript">
+	var ctx = [[@{/}]];
+	
+	layui.use(['form', 'jquery', 'layer'], function() {
+		var $ = layui.jquery,
+		form = layui.form,
+		layer = layui.layer,
+		
+		$dom = $("#dictKeyEdit"),
+		$form = $dom.find("form"),
+		
+		index = layer.index;
+		
+		//表单渲染
+		form.render();
+		
+		//对话框关闭
+		$dom.find("#close").click(function(){
+			layer.close(index);
+		});
+				
+		//注册表单提交
+		form.on('submit(dictKeyEditSubmit)',function(data){
+			var dictKey = data.field;
+			$.post({
+				url: ctx + "dictKey/dictKeyUpdate",
+				data: dictKey,
+				success: function(res){
+					if(res.code==200){
+						util.success("修改成功");
+						layer.close(index);
+						//表格刷新
+						$("#dictKey").find("#find").click();
+					}else{
+						util.error(res.msg);
+					}
+				}
+			});
+			return false;
+		});
+	});
+</script>

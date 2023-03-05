@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" 
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" th:href="@{/js/layuiadmin/layui/css/layui.css}" media="all">
+<link rel="stylesheet" th:href="@{/css/common.css}" media="all">
+</head>
+<body>
+	<div class="main" id="menu">
+		<div class="layui-row">
+			<!-- 菜单树 -->
+			<div class="layui-col-md6">
+				<fieldset class="layui-elem-field">
+					<legend>所有菜单</legend>
+					<div class="layui-field-box">
+						<div id="menuTree" class="demo-tree demo-tree-box"></div>
+					</div>
+				</fieldset>
+			</div>
+			
+			<!-- 菜单信息 -->
+			<div class="layui-col-md6">
+				<fieldset class="layui-elem-field">
+					<legend>菜单信息</legend>
+					<div class="layui-field-box">
+						<form class="layui-form" action="" lay-filter="menuForm">
+							<div class="layui-form-item">
+								<label class="layui-form-label">菜单ID</label>
+								<div class="layui-input-block">
+									<input type="text" name="menuId" class="layui-input" readonly>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">菜单名称</label>
+								<div class="layui-input-block">
+									<input type="text" name="menuName" class="layui-input" required lay-verify="required">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">父级菜单</label>
+								<div class="layui-input-block">
+									<select name="parentId" lay-search>
+										<option value="0">无</option>
+									</select>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">菜单图标</label>
+								<div class="layui-input-block">
+									<input type="text" name="menuIcon" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">URL</label>
+								<div class="layui-input-block">
+									<input type="text" name="menuUrl" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">排序</label>
+								<div class="layui-input-block">
+									<input type="text" name="menuSort" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-item text-align-right">
+								<button shiro:hasPermission="menu:add" lay-submit lay-filter="menuAdd" class="layui-btn layui-btn-radius layui-btn-primary">添加</button>
+								<button shiro:hasPermission="menu:update" lay-submit lay-filter="menuUpdate" class="layui-btn layui-btn-radius layui-btn-primary">修改</button>
+								<button shiro:hasPermission="menu:delete" lay-submit lay-filter="menuDelete" class="layui-btn layui-btn-radius layui-btn-primary">删除</button>
+							</div>
+						</form>
+					</div>
+				</fieldset>
+			</div>
+			
+		</div>
+	</div>
+	
+	<script th:src="@{/js/layuiadmin/layui/layui.js}"></script>
+	<script th:src="@{/js/util.js}"></script>
+	<script>
+	var ctx = "[[@{/}]]";
+	
+		layui.use([ 'jquery','table','laydate','layer','tree','form'], function() {
+			var $ = layui.jquery, 
+			table = layui.table,
+			laydate = layui.laydate,
+			layer = layui.layer,
+			tree = layui.tree,
+			form = layui.form,
+
+			$dom = $("#menu"), 
+			$form = $dom.find("form");
+			
+			//表达渲染
+			form.render();
+			
+			initMenuTree();
+			//渲染菜单树
+			function initMenuTree(){
+				$.get({
+					url: ctx + "menu/getMenuTree",
+					success: function(res){
+						if(res.code==200){
+							var menus = res.data;
+							changeToMenuTree(menus);
+							//菜单树渲染
+							tree.render({
+								elem: '#menuTree'
+								,data: menus
+								,showLine: false
+								,isJump: true
+								,click: function(obj){
+									//表单填充数据
+									formFillData(obj.data);
+								}
+							});			
+						}else{
+							util.error("获取菜单失败");
+						}
+					}
+				});
+			}
+			function changeToMenuTree(menus){
+				menus.forEach(function(menu){
+					menu['title'] = menu.menuName;
+					//默认展开
+					menu['spread'] = true;
+					if(menu.children!=null&&menu.children.length>0)
+						changeToMenuTree(menu.children);
+				})
+			}
+			
+			
+			initMenuSelect();
+			//渲染下拉菜单
+			function initMenuSelect(){
+				$.get({
+					url: ctx + "menu/getAllMenu",
+					success: function(res){
+						if(res.code==200){
+							var menus = res.data;
+							var $menuSelect = $form.find("select[name='parentId']");
+							var selectText = "<option value='0'>无</option>";
+							menus.forEach(function(menu){
+								selectText+="<option value='"+menu.menuId+"'>"+menu.menuName+"</option>";
+							});
+							$menuSelect.html(selectText);
+							form.render();
+						}else{
+							util.error("渲染菜单树失败");
+						}
+					}
+				})
+			}
+			
+			//表单填充数据
+			function formFillData(menu){
+				console.info(menu);
+				$form.find("input[name='menuId']").val(menu.menuId);
+				$form.find("input[name='menuName']").val(menu.menuName);
+				$form.find("input[name='menuIcon']").val(menu.menuIcon);
+				$form.find("input[name='menuUrl']").val(menu.menuUrl);
+				$form.find("input[name='menuSort']").val(menu.menuSort);
+				$form.find("select[name='parentId']").val(menu.parentId);
+				form.render('select');
+			}
+			
+			//菜单功能
+			form.on('submit(menuAdd)', function(data){
+				var menu = form.val("menuForm");
+				$.post({
+					url: ctx + "menu/add",
+					data: menu,
+					success: function(res){
+						if(res.code==200){
+							util.success("添加菜单成功");
+							initMenuTree();
+							initMenuSelect();
+							$form[0].reset();
+						}else{
+							util.error("添加菜单失败");
+						}
+					}
+				});
+				return false;
+			});
+			form.on('submit(menuUpdate)', function(data){
+				var menu = form.val("menuForm");
+				$.post({
+					url: ctx + "menu/update",
+					data: menu,
+					success: function(res){
+						if(res.code==200){
+							util.success("修改菜单成功");
+							initMenuTree();
+							initMenuSelect();
+							$form[0].reset();
+						}else{
+							util.error("修改菜单失败");
+						}
+					}
+				});
+				return false;
+			});
+			form.on('submit(menuDelete)', function(data){
+				layer.confirm('确定删除此菜单吗？<br>此菜单下的子菜单将会一并被删除', {icon: 3, title:'提示'}, function(index){
+					var menu = form.val("menuForm");
+					$.post({
+						url: ctx + "menu/delete/"+menu.menuId,
+						success: function(res){
+							if(res.code==200){
+								util.success("删除菜单成功");
+								initMenuTree();
+								initMenuSelect();
+								$form[0].reset();
+							}else{
+								util.error("删除菜单失败");
+							}
+						}
+					});
+				});
+				return false;
+			});
+		});
+	</script>
+</body>
+</html>

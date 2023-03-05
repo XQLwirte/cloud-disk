@@ -1,0 +1,117 @@
+<!-- 角色菜单信息编辑 -->
+<div id="roleEditMenu" class="dialog-main">
+	<!-- 菜单树 -->
+	<div class="layui-row">
+		<fieldset class="layui-elem-field">
+			<legend>菜单树</legend>
+			<div class="layui-field-box">
+				<div id="menuTree" class="demo-tree-more"></div>
+			</div>
+		</fieldset>
+	</div>
+	<!-- 功能按钮 -->
+	<div class="layui-row layui-row text-align-right">
+		<button id="submit" type="button" class="layui-btn layui-btn-radius">确定</button>
+		<button id="close" type="button" class="layui-btn layui-btn-radius layui-btn-danger">关闭</button>
+	</div>
+</div>
+<script th:inline="javascript">
+
+	var ctx = [[@{/}]];
+
+	layui.use(['form', 'jquery', 'layer', 'tree'], function() {
+		var $ = layui.jquery,
+		form = layui.form,
+		layer = layui.layer,
+		tree = layui.tree,
+		
+		$dom = $("#roleEditMenu"),
+		$form = $dom.find("form"),
+		
+		index = layer.index,
+		role = [[${role}]],
+		menuIds = [[${menuIds}]];
+		
+		//表单渲染
+		form.render();
+		
+		initMenuTree();
+		//渲染菜单树
+		function initMenuTree(){
+			//数据获取
+			$.get({
+				url: ctx + 'menu/getMenuTree',
+				success: function(res){
+					if(res.code==200){
+						//数据转换
+						var menuTree = res.data;
+						var treeData = getMenuTreeData(menuTree);
+						//渲染树
+						tree.render({
+							id: 'menuTree'
+					    	,elem: '#menuTree'
+						    ,data: treeData
+						    ,showCheckbox: true  //是否显示复选框
+						});
+					}else{
+						util.error("所有菜单获取失败");
+					}
+				}
+			})
+		}
+		function getMenuTreeData(menus){
+			var result = [];
+			menus.forEach(function(menu){
+				var data = {
+					id: menu.menuId, 
+					title: menu.menuName, 
+					spread: true //默认展开
+				}
+				if(menu.children!=null&&menu.children.length>0)
+					data["children"] = getMenuTreeData(menu.children);
+				else //防止直接选中父节点而全选子节点
+					data["checked"] = util.inArray(menu.menuId,menuIds); //是否默认选中
+				
+				result.push(data);
+			});
+			return result;
+		}
+		
+		
+	    //对话框关闭
+		$dom.find("#close").click(function(){
+			layer.close(index);
+		});
+	    //关联菜单修改
+		$dom.find("#submit").click(function(){
+			var checkedData = tree.getChecked('menuTree');
+			var checkedIds = getCheckedIds(checkedData);
+			$.post({
+				url: ctx + "role/roleUpdateMenu",
+				data: {
+					roleId: role.roleId,
+					menuIdsStr: checkedIds.join(",") 
+				},
+				success: function(res){
+					if(res.code==200){
+						util.success("修改成功");
+						layer.close(index);
+						//表格刷新
+						$("#role").find("#find").click();
+					}else{
+						util.error(res.msg);
+					}
+				}
+			});
+		});
+		function getCheckedIds(datas){
+			var ids = [];
+			datas.forEach(function(data){
+				ids.push(data.id);
+				if(data.children!=null&&data.children.length>0)
+					ids = ids.concat(getCheckedIds(data.children));
+			});
+			return ids;
+		}
+	});
+</script>

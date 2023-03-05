@@ -1,0 +1,82 @@
+<!-- 角色基本信息编辑 -->
+<div id="roleEdit" class="dialog-main">
+	<form class="layui-form" action="">
+		<!-- 表单数据 -->
+		<fieldset class="layui-elem-field">
+			<legend>角色信息</legend>
+			<div class="layui-field-box">
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">角色ID</label>
+					<div class="layui-input-block">
+						<input type="text" name="roleId" th:value="${role.roleId}" required  lay-verify="required" autocomplete="off" class="layui-input" readonly>
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">角色名称</label>
+					<div class="layui-input-block">
+						<input type="text" name="roleName" th:value="${role.roleName}" required  lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">角色码</label>
+					<div class="layui-input-block">
+						<input type="text" name="roleCode" th:value="${role.roleCode}" required  lay-verify="required" placeholder="请输入角色码" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-row">
+					<label class="layui-form-label">描述</label>
+					<div class="layui-input-block">
+						<textarea name="roleDescribe" placeholder="请输入描述信息" class="layui-textarea">[[${role.roleDescribe}]]</textarea>
+					</div>
+				</div>			
+			</div>
+		</fieldset>
+		<!-- 表单提交按钮 -->
+		<div class="layui-form-item layui-row text-align-right">
+			<button class="layui-btn layui-btn-radius" lay-submit lay-filter="roleEditSubmit">修改</button>
+			<button id="close" type="button" class="layui-btn layui-btn-radius layui-btn-danger">关闭</button>
+		</div>
+	</form>
+</div>
+<script th:inline="javascript">
+	var ctx = [[@{/}]];
+
+	layui.use(['form', 'jquery', 'layer'], function() {
+		var $ = layui.jquery,
+		form = layui.form,
+		layer = layui.layer,
+		
+		$dom = $("#roleEdit"),
+		$form = $dom.find("form"),
+		
+		index = layer.index;
+		
+		//表单渲染
+		form.render();
+		
+		//对话框关闭
+		$dom.find("#close").click(function(){
+			layer.close(index);
+		});
+				
+		//注册表单提交
+		form.on('submit(roleEditSubmit)',function(data){
+			var role = data.field;
+			$.post({
+				url: ctx + "role/roleUpdate",
+				data: role,
+				success: function(res){
+					if(res.code==200){
+						util.success("修改成功");
+						layer.close(index);
+						//表格刷新
+						$("#role").find("#find").click();
+					}else{
+						util.error(res.msg);
+					}
+				}
+			});
+			return false;
+		});
+	});
+</script>

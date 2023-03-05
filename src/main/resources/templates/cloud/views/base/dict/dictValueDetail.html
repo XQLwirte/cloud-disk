@@ -1,0 +1,52 @@
+<!-- 字典值详情 -->
+<div id="dictValueDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">值ID:</label>
+			<label class="layui-form-label label-text-left">[[${dictValue.valueId}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">键码:</label>
+			<label class="layui-form-label label-text-left">[[${dictValue.keyCode==null?'无':dictValue.keyCode}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">值码:</label>
+			<label class="layui-form-label label-text-left">[[${dictValue.valueCode==null?'无':dictValue.valueCode}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">值标签:</label>
+			<label class="layui-form-label label-text-left">[[${dictValue.valueLabel==null?'无':dictValue.valueLabel}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">排序:</label>
+			<label class="layui-form-label label-text-left">[[${dictValue.valueSort==null?'无':dictValue.valueSort}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${dictValue.createBy==null?'无':dictValue.createBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${dictValue.createTime==null?'无':#dates.format(dictValue.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${dictValue.updateBy==null?'无':dictValue.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${dictValue.updateTime==null?'无':#dates.format(dictValue.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

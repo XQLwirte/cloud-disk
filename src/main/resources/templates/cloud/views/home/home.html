@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" 
+		xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" th:href="@{/js/layuiadmin/layui/css/layui.css}" media="all">
+<link rel="stylesheet" th:href="@{/css/common.css} " media="all">
+<style type="text/css">
+	.user-photo{
+		margin-top:16%;
+		width: 160px;
+		height: 160px;
+		border-radius: 50%;
+	}
+	.user-name{
+		font-size: 30px;
+		font-weight:bold;
+	}
+	.user-gender{
+		font-size: 14px;
+		color:gray;
+	}
+	.user-role{
+		margin-top:16px;
+		font-size: 20px;	
+	}
+</style>
+</head>
+<body>
+	<div class="fill-screen text-align-center">
+		<!-- 头像 -->
+		<p><img class="user-photo" th:src="${currentUser.photo}"></p>
+		<!-- 个人名称 -->
+		<p><label class="user-name">[[${currentUser.username}]]</label></p>
+		<!-- 性别 -->
+		<p><label class="user-gender">[[${@dict.getValueLabel('sys_gender',currentUser.gender)}]]</label></p>
+		<!-- 角色 -->
+		<p><label class="user-role">[[${roleNamesStr}]]</label></p>
+	</div>
+<script th:src="@{/js/layuiadmin/layui/layui.js}"></script>
+<script>
+	layui.use(['layer'], function() {
+		var layer = layui.layer;
+		
+	});
+</script>
+</body>
+</html>

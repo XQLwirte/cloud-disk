@@ -1,0 +1,42 @@
+<!-- 菜单详情 -->
+<div id="logDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">日志ID:</label>
+			<label class="layui-form-label label-text-left">[[${log.logId}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">日志内容:</label>
+			<label class="layui-form-label label-text-left">[[${log.logContent==null?'无':log.logContent}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">IP:</label>
+			<label class="layui-form-label label-text-left">[[${log.ip==null?'无':log.ip}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">操作人:</label>
+			<label class="layui-form-label label-text-left">[[${log.createBy==null?'无':log.createBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">操作时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${log.createTime==null?'无':#dates.format(log.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${log.updateBy==null?'无':log.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${log.updateTime==null?'无':#dates.format(log.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

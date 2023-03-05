@@ -1,0 +1,56 @@
+#SpringBoot配置文件
+
+#配置文件环境
+spring:
+ profiles:
+  active: dev
+
+#MyBatisPlus配置
+mybatis-plus:
+ mapper-locations: classpath:static/mapper/**/*.xml #xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）
+ configuration:
+  map-underscore-to-camel-case: true # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
+  #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #日志输出
+
+
+#项目配置
+project:
+ shiro:
+  authc: /** #需要认证的URL
+  login: /login #登录页面URL
+  success: /index #认证成功后的跳转页面
+  anons: #无需认证的URL
+   - /login #登录页面请求无需认证
+   - /authenticationBack #后端认证请求
+   - /authenticationFront #后端认证请求
+   - /kaptcha #验证码
+   - /font/**
+   - /js/**
+   - /css/**
+   - /img/**
+   - /mapper/**
+   - /share/checkShareCode/** #共享文件接口开放
+   - /share/getShareFile/** #共享文件接口开放
+   - /share/download/** #共享文件接口开放
+ backRoles: #后端登陆角色
+  - ROLE_DEV #开发人员
+  - ROLE_TEST #测试人员
+ frontRoles: #前端登陆角色
+  - ROLE_USER #最终用户
+
+
+#FDFS配置
+fdfs:
+ soTimeout: 1501 # 读取时间
+ connectTimeout: 691 # 连接超时时间
+ # charset: UTF-8 # 编码默认UTF-8，charset属性不能自定义
+ group: group1 #组名，要与fdfs服务器一致
+ thumbImage: # 缩略图
+  width: 150
+  height: 150
+ trackerList: # tracker列表
+  - 47.102.202.189:22122
+ pool:
+  max-total: 3000
+  max-wait-millis: 30000
+ nginx: 47.102.202.189

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcx.cloud.storage.mapper.StorageMapper">
+
+	<resultMap id="storageMap" type="com.zcx.cloud.storage.entity.Storage">
+        <id column="storageId" property="storageId"></id>
+        <result column="capacityTotal" property="capacityTotal"></result>
+        <result column="capacityUse" property="capacityUse"></result>
+        <result column="create_by" property="createBy"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="storageValid" property="valid"></result>
+        <result column="username" property="username"></result>
+    </resultMap>
+
+    <sql id="StorageMapperSql">
+        select distinct
+          storage.storage_id storageId,
+          storage.capacity_total capacityTotal,
+          storage.capacity_use capacityUse,
+          storage.create_by create_by,
+          storage.create_time create_time,
+          storage.valid storageValid,
+          user.username username
+        from t_storage storage
+         left join t_storage_user su on storage.storage_id = su.storage_id
+         left join t_user user on su.user_id = user.user_id
+    </sql>
+
+    <select id="selectStoragePage" resultMap="storageMap">
+        <include refid="StorageMapperSql"></include>
+        <where>
+            <if test="storage.username!=null and storage.username!=''">
+                and username like concat('%',#{storage.username},'%')
+            </if>
+            <if test="storage.createBy!=null and storage.createBy!=''">
+                and storage.create_by like concat('%',#{storage.createBy},'%')
+            </if>
+            <if test="storage.createTime!=null">
+                and storage.create_time > #{storage.createTime}
+            </if>
+            and storage.valid = '1'
+        </where>
+    </select>
+</mapper>

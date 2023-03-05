@@ -1,0 +1,145 @@
+<!-- 登陆页面 -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>X-cloud云盘-登录</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" th:href="@{/js/layuiadmin/layui/css/layui.css}" media="all">
+<link rel="stylesheet" th:href="@{/css/common.css}" media="all">
+<style type="text/css">
+	.logo{
+		font-weight: bolder;
+		background-image: -webkit-linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		text-align: center;
+		font-size: 30px;
+		margin: 9px;
+	}
+
+	.layui-form-item{
+		margin-top: 26px;
+		margin-bottom: 26px;
+	}
+	/*.back{*/
+	/*	background-image: linear-gradient(to top, #ebbba7 0%, #cfc7f8 100%) !important;*/
+	/*	content: '';*/
+	/*	display: flex;*/
+	/*	width: auto;*/
+	/*	height: auto;*/
+	/*}*/
+</style>
+</head>
+<body class="back">
+
+	<div class="layui-row vertical-center fill-screen">
+		<div class="layui-col-md4 layui-col-md-offset4 layui-col-xs10 layui-col-xs-offset1 flow-block">
+			<!-- Logo -->
+			<div class="logo">X-cloud云盘</div>
+			<!-- 登录注册标签 -->
+			<div class="layui-tab layui-tab-brief" lay-filter="loginRegist">
+				<form class="layui-form" action="">
+					<div class="layui-form-item layui-row">
+						<label class="layui-col-md3 layui-col-xs3 layui-form-label text-align-right">用户名</label>
+						<div class="layui-col-md9 layui-col-xs8">
+							<input type="text" name="username" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-row">
+						<label class="layui-col-md3 layui-col-xs3 layui-form-label text-align-right">密码</label>
+						<div class="layui-col-md9 layui-col-xs8">
+							<input type="password" name="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-row">
+						<div class="layui-col-md-offset1 layui-col-xs-offset1">
+							<input type="checkbox" name="rememberMe" title="记住我" lay-skin="primary">
+						</div>
+					</div>
+					<div class="layui-form-item layui-row">
+						<button class="layui-col-md10 layui-col-md-offset1 layui-col-xs10 layui-col-xs-offset1
+									   layui-btn layui-btn-lg layui-btn-radius layui-btn-primary"
+									   lay-submit lay-filter="loginSubmit">
+							<i id="loading" class="layui-icon layui-icon-loading-1 layui-anim layui-anim-rotate layui-anim-loop" style="display: none;"></i>
+							登&nbsp;&nbsp;&nbsp;&nbsp;录
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 备案信息 -->
+<!--	<div id="keepOnRecord" style="width: 100%;text-align: center;position: absolute;bottom: 0px;z-index: 9999999999;">-->
+<!--		©2022-2023 <a href="https://blog.educy.top">blog.educy.top</a> 版权所有：<a href="http://www.beian.miit.gov.cn">苏ICP备19028165号</a>-->
+<!--	</div>-->
+
+	<script th:src="@{/js/layuiadmin/layui/layui.js}"></script>
+	<script th:src="@{/js/util.js}"></script>
+	<script>
+		var ctx = "[[@{/}]]";
+
+		layui.use(['jquery','element','form'], function() {
+			var $ = layui.jquery,
+			element = layui.element,
+			form = layui.form;
+
+
+			//表单渲染
+			form.render();
+
+			//登录
+			form.on('submit(loginSubmit)',function(data){
+				//加载条
+				visibleLoading(true);
+
+				var user = data.field;
+				$.post({
+					url: ctx + "authenticationBack",
+					data: user,
+					success: function(res){
+						if(res.code==200){
+							window.location.href = ctx;
+						}else{
+							util.error(res.msg);
+						}
+						//加载条
+						visibleLoading(false);
+					},
+					error: function(){
+						util.error(res.msg);
+						//加载条
+						visibleLoading(false);
+					}
+				});
+				return false;
+			});
+
+			//进度条可见性
+			function visibleLoading(visible){
+				if(visible)
+					$("#loading").show();
+				else
+					$("#loading").hide();
+			}
+
+
+			//移动端不显示备案信息
+			checkMobile();
+			function checkMobile(){
+				var isMobile = util.checkMobile();
+				if(isMobile)
+					$("#keepOnRecord").remove();
+			}
+
+		});
+	</script>
+</body>
+</html>
+
+

@@ -1,0 +1,56 @@
+<!-- 垃圾详情 -->
+<div id="garbageDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">垃圾ID:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.garbageId}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">资源名称:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.resourceName==null?'无':garbage.resourceName}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">资源类型:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.resourceType==null?'无':@dict.getValueLabel('garbage_reousrce_type',garbage.resourceType)}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">所属用户:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.username==null?'无':garbage.username}]]</label>
+		</div>
+		<div class="layui-col-md8 layui-col-xs12">
+			<label class="layui-form-label">资源URL:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.resourceUrl==null?'无':garbage.resourceUrl}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">有效期:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.active==null?'0':garbage.active}]]天</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.createBy==null?'无':garbage.createBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${garbage.createTime==null?'无':#dates.format(garbage.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${garbage.updateBy==null?'无':garbage.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${garbage.updateTime==null?'无':#dates.format(garbage.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

@@ -1,0 +1,229 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.zcx.cloud</groupId>
+  <artifactId>yan-cloud-disk</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <!-- 打包方式 默认jar包 -->
+  <packaging>jar</packaging>
+  <name>cloud-disk</name>
+
+  <!-- SpringBoot父项目 -->
+  <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>2.1.7.RELEASE</version>
+  </parent>
+
+  <!-- 静态变量 -->
+  <properties>
+  	<mybatis.plus.version>3.2.0</mybatis.plus.version>
+  	<mybatis.plus.generator.version>3.3.1</mybatis.plus.generator.version>
+  	<dynamic.datesource.version>2.5.4</dynamic.datesource.version>
+  	<mysql.connector.version>8.0.21</mysql.connector.version>
+  	<lombok.version>1.18.10</lombok.version>
+  	<java.version>1.8</java.version>
+  	<shiro.version>1.4.0</shiro.version>
+  	<shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
+  	<shiro.thymeleaf.version>2.0.0</shiro.thymeleaf.version>
+  	<jedis.version>2.9.3</jedis.version>
+  	<fastdfs.client.version>1.26.1-RELEASE</fastdfs.client.version>
+  	<quartz.version>2.2.3</quartz.version>
+  	<fastjson.version>1.2.54</fastjson.version>
+  	<kaptcha.version>2.3.2</kaptcha.version>
+<!--  	<qrcode.version>3.0</qrcode.version>-->
+  	<encoding>UTF-8</encoding>
+  	<!-- 打包时，跳过单元测试 -->
+  	<skipTests>true</skipTests>
+  </properties>
+
+  <!-- 依赖清单 -->
+  <dependencies>
+  	<!-- SpringBoot核心依赖 -->
+  	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter</artifactId>
+  	</dependency>
+
+  	<!-- Spring AOP切面 -->
+  	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter-aop</artifactId>
+  	</dependency>
+
+  	<!-- SpringBoot单元测试依赖 -->
+  	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter-test</artifactId>
+  	</dependency>
+
+  	<!-- SpringBoot Web依赖 -->
+  	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter-web</artifactId>
+  		<exclusions>
+  			<!-- 打war包时去除SpringBoot内置Tomcat -->
+  			<!--
+  			<exclusion>
+  				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-tomcat</artifactId>
+  			</exclusion>
+  			 -->
+  		</exclusions>
+  	</dependency>
+
+  	<!-- Thymeleaf模板引擎依赖 -->
+  	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+  	</dependency>
+
+  	<!-- Freemarker模板引擎依赖 -->
+  	<dependency>
+	    <groupId>org.freemarker</groupId>
+	    <artifactId>freemarker</artifactId>
+	    <version>2.3.28</version>
+	</dependency>
+
+  	<!-- lombok依赖 -->
+  	<dependency>
+  		<groupId>org.projectlombok</groupId>
+  		<artifactId>lombok</artifactId>
+  		<version>${lombok.version}</version>
+  	</dependency>
+
+  	<!-- MyBatisPlus依赖 -->
+  	<dependency>
+  		<groupId>com.baomidou</groupId>
+  		<artifactId>mybatis-plus-boot-starter</artifactId>
+  		<version>${mybatis.plus.version}</version>
+  	</dependency>
+  	<!-- MyBatisPlus代码生成器依赖 -->
+  	<dependency>
+	    <groupId>com.baomidou</groupId>
+	    <artifactId>mybatis-plus-generator</artifactId>
+	    <version>${mybatis.plus.generator.version}</version>
+	</dependency>
+	<!-- MyBatisPlus提供的动态数据源 -->
+	<dependency>
+		<groupId>com.baomidou</groupId>
+		<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+		<version>${dynamic.datesource.version}</version>
+	</dependency>
+
+	<!-- MySQL驱动依赖 -->
+	<dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql.connector.version}</version>
+    </dependency>
+
+    <!-- Shiro依赖 -->
+    <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-spring</artifactId>
+        <version>${shiro.version}</version>
+    </dependency>
+    <!-- Shiro Thymeleaf拓展权限标签依赖 -->
+    <dependency>
+        <groupId>com.github.theborakompanioni</groupId>
+        <artifactId>thymeleaf-extras-shiro</artifactId>
+        <version>${shiro.thymeleaf.version}</version>
+    </dependency>
+
+	<!-- Jedis依赖 -->
+    <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>${jedis.version}</version>
+    </dependency>
+
+    <!-- fastdfs client依赖 -->
+    <dependency>
+		<groupId>com.github.tobato</groupId>
+		<artifactId>fastdfs-client</artifactId>
+		<version>${fastdfs.client.version}</version>
+	</dependency>
+
+	<!-- Quartz依赖 -->
+	<dependency>
+		<groupId>org.quartz-scheduler</groupId>
+	    <artifactId>quartz</artifactId>
+	    <version>${quartz.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.quartz-scheduler</groupId>
+	    <artifactId>quartz-jobs</artifactId>
+	    <version>${quartz.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-quartz</artifactId>
+	</dependency>
+
+	<!-- FastJSON依赖 -->
+	<dependency>
+		<groupId>com.alibaba</groupId>
+	    <artifactId>fastjson</artifactId>
+	    <version>${fastjson.version}</version>
+	</dependency>
+
+	<!-- kaptcha验证码依赖 -->
+    <dependency>
+	    <groupId>com.github.penggle</groupId>
+	    <artifactId>kaptcha</artifactId>
+	    <version>${kaptcha.version}</version>
+	</dependency>
+
+<!--	&lt;!&ndash; QRCode依赖 &ndash;&gt;-->
+<!--	<dependency>-->
+<!--	    <groupId>QRCode</groupId>-->
+<!--	    <artifactId>QRCode</artifactId>-->
+<!--	    <version>${qrcode.version}</version>-->
+<!--	</dependency>-->
+
+    <!-- 热部署依赖,热部署插件会导致Redis缓存的不一致性，从而Shiro与Redis结合会出现获取不到当前用户的情况 -->
+    <!--
+    <dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-devtools</artifactId>
+	</dependency>
+	 -->
+  </dependencies>
+
+
+  <!-- 编译环境 -->
+  <build>
+  	<!-- 插件 -->
+  	<plugins>
+  		<!-- Maven打包插件 -->
+  		<plugin>
+  			<groupId>org.springframework.boot</groupId>
+  			<artifactId>spring-boot-maven-plugin</artifactId>
+  			<!-- 指定主类,防止有两个主类 -->
+  			<configuration>
+  				<mainClass>com.zcx.cloud.Application</mainClass>
+  			</configuration>
+  			<executions>
+				<execution>
+					<goals>
+						<goal>repackage</goal>
+					</goals>
+				</execution>
+			</executions>
+  		</plugin>
+
+  		<!-- 编译插件 -->
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-compiler-plugin</artifactId>
+  			<version>3.7.0</version>
+  			<configuration>
+  				<source>${java.version}</source>
+  				<target>${java.version}</target>
+  				<encoding>${encoding}</encoding>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  </build>
+</project>

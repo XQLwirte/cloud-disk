@@ -1,0 +1,48 @@
+<!-- 存储详情 -->
+<div id="storageDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">存储ID:</label>
+			<label class="layui-form-label label-text-left">[[${storage.storageId}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">所属用户:</label>
+			<label class="layui-form-label label-text-left">[[${storage.username==null?'无':storage.username}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">总容量:</label>
+			<label class="layui-form-label label-text-left">[[${storage.capacityTotal/1024/1024}]]M</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">已用容量:</label>
+			<label class="layui-form-label label-text-left">[[${storage.capacityUse/1024/1024}]]M</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${storage.createBy==null?'无':storage.createBy}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${storage.createTime==null?'无':#dates.format(storage.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${storage.updateBy==null?'无':storage.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md6 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${storage.updateTime==null?'无':#dates.format(storage.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>

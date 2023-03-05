@@ -1,0 +1,48 @@
+<!-- 角色详情 -->
+<div id="roleDetail" class="dialog-main">
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">角色ID:</label>
+			<label class="layui-form-label label-text-left">[[${role.roleId}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">角色名称:</label>
+			<label class="layui-form-label label-text-left">[[${role.roleName==null?'无':role.roleName}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">角色码:</label>
+			<label class="layui-form-label label-text-left">[[${role.roleCode==null?'无':role.roleCode}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建人:</label>
+			<label class="layui-form-label label-text-left">[[${role.createBy==null?'无':role.createBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">创建时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${role.createTime==null?'无':#dates.format(role.createTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新人:</label>
+			<label class="layui-form-label label-text-left">[[${role.updateBy==null?'无':role.updateBy}]]</label>
+		</div>
+		<div class="layui-col-md4 layui-col-xs12">
+			<label class="layui-form-label">更新时间:</label>
+			<label class="layui-form-label label-text-left label-width-auto">[[${role.updateTime==null?'无':#dates.format(role.updateTime,'yyyy-MM-dd HH:mm:ss')}]]</label>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md12 layui-col-xs12">
+			<label class="layui-form-label">描述:</label>
+			<label class="layui-form-label label-width-auto label-text-left">[[${role.roleDescribe==null?'无':role.roleDescribe}]]</label>
+		</div>
+	</div>
+</div>
+<script th:inline="javascript">
+	layui.use([ 'jquery'], function() {
+		var $ = layui.jquery;
+	});
+</script>
